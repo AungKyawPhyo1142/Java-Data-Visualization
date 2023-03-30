@@ -1,6 +1,8 @@
 import javax.swing.JOptionPane;
-
+import java.util.Random;
 public class visualization {
+
+    static int swapElapsedTime = 0;
 
     public static void printStars(int[]arr){
         for(int i=0;i<arr.length;i++){
@@ -42,6 +44,7 @@ public class visualization {
                 System.out.flush();
                 try {
                     printCurrentStars(arr, i, j);
+                    swapElapsedTime = 900;
                     Thread.sleep(900);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -54,6 +57,47 @@ public class visualization {
         System.out.flush();
         printStars(arr);
     }
+
+    public static boolean isSorted(int[]arr){
+
+        for(int i=0;i<arr.length-1;i++){
+            if(arr[i] > arr[i+1]){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    public static void shuffle(int[]arr){
+        Random random = new Random();
+        for(int i=0;i<arr.length;i++){
+            int nextIndexToSwap = random.nextInt(arr.length);
+            int temp = arr[nextIndexToSwap];
+            arr[nextIndexToSwap] = arr[i];
+            arr[i] = temp;
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+            try {
+                printCurrentStars(arr, i, nextIndexToSwap);
+                swapElapsedTime = 900;
+                Thread.sleep(900);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public static void bogoSort(int[]arr){
+        while(!isSorted(arr)){
+            shuffle(arr);
+        }
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        printStars(arr);
+    }
+
     public static void main(String[] args) {
         
         String s;
@@ -69,9 +113,12 @@ public class visualization {
             s = JOptionPane.showInputDialog("Enter the element at index["+i+"]");
             arr[i] = Integer.parseInt(s);
         }
-
+        long startTime = System.currentTimeMillis();
+        //bogoSort(arr);
         bubbleSort(arr);
-
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Elapsed Time: "+(elapsedTime-swapElapsedTime)+" ms");
         System.out.println();
         
     }
